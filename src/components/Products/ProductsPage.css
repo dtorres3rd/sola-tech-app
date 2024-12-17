@@ -1,0 +1,7 @@
+.products_page {
+  /* this is to divide - products page to sections */
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  padding: 20px;
+  /* end skeleton - initial css */
+}
