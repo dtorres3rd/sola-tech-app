@@ -5,15 +5,17 @@ import Navbar from './components/Navbar/Navbar';
 import HomePage from './components/Home/HomePage';
 import ProductsPage from './components/Products/ProductsPage';
 import SingleProductPage from './components/SingleProduct/SingleProductPage';
+import CartPage from './components/Cart/CartPage';
 
 const App = () => {
   return (
     <div className='app'>
       <Navbar />
       <main>
-        {/* <HomePage /> */}
-        {/* <ProductsPage /> */}
-        <SingleProductPage />
+        {/* <HomePage />
+        <ProductsPage />
+        <SingleProductPage /> */}
+        <CartPage user='daniel' />
       </main>
     </div>
   );
