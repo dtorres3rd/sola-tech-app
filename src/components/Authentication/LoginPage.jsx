@@ -1,35 +1,30 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 
 import './LoginPage.css';
+import { useForm } from 'react-hook-form';
 
 const LoginPage = () => {
-  const nameRef = useRef(null);
-  const phoneRef = useRef(null);
+  const { register, handleSubmit } = useForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const user = {
-      name: '',
-      phone: 0,
-    };
-    user.name = nameRef.current.value;
-    user.phone = phoneRef.current.value;
-    console.log(user);
-  };
+  const onSubmit = (formData) => console.log(formData);
 
   return (
     <section className='align_center form_page'>
-      <form action='' className='authentication_form' onSubmit={handleSubmit}>
+      <form
+        action=''
+        className='authentication_form'
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <h2>Login Form</h2>
         <div className='form_inputs'>
           <div>
             <label htmlFor='name'>Name</label>
             <input
               type='text'
-              ref={nameRef}
               id='name'
               className='form_text_input'
               placeholder='Enter your name'
+              {...register('name')}
             />
           </div>
 
@@ -37,10 +32,10 @@ const LoginPage = () => {
             <label htmlFor='phone'>Phone Number</label>
             <input
               type='number'
-              ref={phoneRef}
               id='phone'
               className='form_text_input'
               placeholder='Enter your phone number'
+              {...register('phone', { valueAsNumber: true })} // this will parse the data from formData to number
             />
           </div>
 
