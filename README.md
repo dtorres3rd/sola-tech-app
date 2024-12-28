@@ -22,4 +22,5 @@ Libraries:
 - added react-hook-form for form management
 - added zod for schema based validation
 - added @hookform/resolvers for implementation of zod - schema based validatin for react-hook-form
-- added react routing via react-router-dom @ 6.11.2
+- added/used react routing via react-router-dom @ 6.11.2
+- used axios for API communication
