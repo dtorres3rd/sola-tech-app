@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './ProductsList.css';
 import ProductCard from './ProductCard';
@@ -8,9 +8,9 @@ import { useSearchParams } from 'react-router-dom';
 import Pagination from '../Common/Pagination';
 
 const ProductsList = () => {
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useSearchParams();
   const category = search.get('category');
-  const page = search.get('page');
 
   const { data, error, isLoading } = useData(
     '/products',
@@ -23,38 +23,41 @@ const ProductsList = () => {
     },
     [category, page]
   );
+
+  useEffect(() => {
+    setPage(1);
+  }, [category]);
+
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
 
-  {
-    /* commenting this out in favor of infinite scrolling vs pagination */
-  }
   const handlePageChange = (page) => {
     const currentParams = Object.fromEntries([...search]);
 
-    setSearch({ ...currentParams, page: page });
+    setSearch({
+      ...currentParams,
+      page: parseInt(currentParams.page) + 1, // Default to page 1 if currentParams.page is undefined
+    });
   };
 
-  // const handlePageChange = (page) => {
-  //   const currentParams = Object.fromEntries([...search]);
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, clientHeight, scrollHeight } =
+        document.documentElement;
 
-  //   setSearch({
-  //     ...currentParams,
-  //     page: parseInt(currentParams.page || 1) + 1, // Default to page 1 if currentParams.page is undefined
-  //   });
-  // };
+      if (
+        scrollTop + clientHeight >= scrollHeight - 1 &&
+        ~isLoading &&
+        data &&
+        page < data.totalPages
+      ) {
+        setPage((prev) => prev + 1);
+      }
+    };
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const { scrollTop, clientHeight, scrollHeight } =
-  //       document.documentElement;
+    window.addEventListener('scroll', handleScroll);
 
-  //     if (scrollTop + clientHeight >= scrollHeight - 1) {
-  //       handlePageChange();
-  //     }
-  //   };
-
-  //   window.addEventListener('scroll', handleScroll);
-  // }, []);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [data, isLoading]);
 
   return (
     <section className='products_list_section'>
@@ -75,31 +78,30 @@ const ProductsList = () => {
           - isloading if condition
           - optional chaining: this condition will only run if data is only available and not null (? syntax), if true, && syntax will run - data.products.map will run
         */}
-        {isLoading
-          ? skeletons.map((n) => <ProductCardSkeleton key={n} />)
-          : data?.products &&
-            data.products.map((product) => (
-              <ProductCard
-                key={product._id}
-                id={product._id}
-                image={product.images[0]}
-                price={product.price}
-                title={product.title}
-                rating={product.reviews.rate}
-                ratingCounts={product.reviews.counts}
-                stock={product.stock}
-              />
-            ))}
+        {data?.products &&
+          data.products.map((product) => (
+            <ProductCard
+              key={product._id}
+              id={product._id}
+              image={product.images[0]}
+              price={product.price}
+              title={product.title}
+              rating={product.reviews.rate}
+              ratingCounts={product.reviews.counts}
+              stock={product.stock}
+            />
+          ))}
+        {isLoading && skeletons.map((n) => <ProductCardSkeleton key={n} />)}
       </div>
       {/* commenting this out in favor of infinite scrolling vs pagination */}
-      {data && (
+      {/* {data && (
         <Pagination
           totalPosts={data.totalProducts}
           postsPerPage={8}
           onClick={handlePageChange}
           currentPage={page}
         />
-      )}
+      )} */}
     </section>
   );
 };

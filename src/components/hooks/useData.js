@@ -12,19 +12,19 @@ const useData = (endpoint, customConfig, dependency) => {
       apiClient
         .get(endpoint, customConfig)
         .then((res) => {
-          {
-            /* commenting this out in favor of infinite scrolling vs pagination */
+          if (
+            endpoint === '/products' &&
+            data &&
+            data.products &&
+            customConfig.params.page !== 1
+          ) {
+            setData((prevData) => ({
+              ...prevData,
+              products: [...prevData.products, ...res.data.products],
+            }));
+          } else {
+            setData(res.data);
           }
-          setData(res.data);
-
-          // if (endpoint === '/products' && data && data.products) {
-          //   setData((prevData) => ({
-          //     ...prevData,
-          //     products: [...prevData.products, ...res.data.products],
-          //   }));
-          // } else {
-          //   setData(res.data);
-          // }
 
           setIsLoading(false);
         })
