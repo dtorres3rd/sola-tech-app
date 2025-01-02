@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import './LoginPage.css';
-import { login } from '../../services/userServices';
+import "./LoginPage.css";
+import { login } from "../../services/userServices";
 
 const schema = z.object({
-  email: z.string().email({ message: 'Enter valid email address' }).min(3),
+  email: z.string().email({ message: "Enter valid email address" }).min(3),
   password: z
     .string()
-    .min(8, { message: 'Password should be at least 8 characters' }),
+    .min(8, { message: "Password should be at least 8 characters" }),
 });
 
 const LoginPage = () => {
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState("");
 
   const {
     register,
@@ -25,6 +25,7 @@ const LoginPage = () => {
   const onSubmit = async (formData) => {
     try {
       await login(formData);
+      window.location = "/";
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setFormError(err.response.data.message);
@@ -45,10 +46,10 @@ const LoginPage = () => {
             <label htmlFor='email'>Email</label>
             <input
               type='email'
-              id='emial'
+              id='email'
               className='form_text_input'
               placeholder='Enter your email address'
-              {...register('email')}
+              {...register("email")}
             />
             {errors.email && (
               <em className='form_error'>{errors.email.message}</em>
@@ -62,7 +63,7 @@ const LoginPage = () => {
               id='password'
               className='form_text_input'
               placeholder='Enter your password'
-              {...register('password')}
+              {...register("password")}
             />
             {errors.password && (
               <em className='form_error'>{errors.password.message}</em>
