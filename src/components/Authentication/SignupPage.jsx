@@ -1,39 +1,39 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import './SignupPage.css';
-import user from '../../assets/user.webp';
-import { signup } from '../../services/userServices';
+import "./SignupPage.css";
+import user from "../../assets/user.webp";
+import { signup } from "../../services/userServices";
 
 const schema = z
   .object({
     name: z
       .string()
-      .min(3, { message: 'Name should be at least 3 characters' }),
-    email: z.string().email({ message: 'Please enter valid email' }),
+      .min(3, { message: "Name should be at least 3 characters" }),
+    email: z.string().email({ message: "Please enter valid email" }),
     password: z
       .string()
-      .min(8, { message: 'Password must be at least 8 characters' }),
+      .min(8, { message: "Password must be at least 8 characters" }),
     confirmPassword: z.string(),
     deliveryAddress: z
       .string()
-      .min(10, { message: 'Address must be at least 10 characters' }),
+      .min(10, { message: "Address must be at least 10 characters" }),
   })
   .refine(
     (currentObjectFormField) =>
       currentObjectFormField.password ===
       currentObjectFormField.confirmPassword,
     {
-      message: 'Confirm Password does not match Password',
-      path: ['confirmPassword'],
+      message: "Confirm Password does not match Password",
+      path: ["confirmPassword"],
     }
   );
 
 const SignupPage = () => {
   const [profilePic, setProfilePic] = useState(null);
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState("");
   const {
     register,
     handleSubmit,
@@ -43,6 +43,7 @@ const SignupPage = () => {
   const onSubmit = async (FormData) => {
     try {
       await signup(FormData, profilePic);
+      window.location = "/";
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setFormError(err.response.data.message);
@@ -85,7 +86,7 @@ const SignupPage = () => {
               className='form_text_input'
               type='text'
               placeholder='Enter your name'
-              {...register('name')}
+              {...register("name")}
             />
             {errors.name && (
               <em className='form_error'>{errors.name.message}</em>
@@ -99,7 +100,7 @@ const SignupPage = () => {
               className='form_text_input'
               type='email'
               placeholder='Enter your email address'
-              {...register('email')}
+              {...register("email")}
             />
             {errors.email && (
               <em className='form_error'>{errors.email.message}</em>
@@ -113,7 +114,7 @@ const SignupPage = () => {
               className='form_text_input'
               type='password'
               placeholder='Enter your password'
-              {...register('password')}
+              {...register("password")}
             />
             {errors.password && (
               <em className='form_error'>{errors.password.message}</em>
@@ -127,7 +128,7 @@ const SignupPage = () => {
               className='form_text_input'
               type='password'
               placeholder='Enter confirm password'
-              {...register('confirmPassword')}
+              {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
               <em className='form_error'>{errors.confirmPassword.message}</em>
@@ -140,7 +141,7 @@ const SignupPage = () => {
               id='address'
               className='input_textarea'
               placeholder='Enter delivery address'
-              {...register('deliveryAddress')}
+              {...register("deliveryAddress")}
             />
             {errors.deliveryAddress && (
               <em className='form_error'>{errors.deliveryAddress.message}</em>
